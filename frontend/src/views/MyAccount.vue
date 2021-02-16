@@ -1,0 +1,87 @@
+<template>
+<div class="grid">
+  <div class="Join">
+    <img class="Skate" src="@/assets/skate-hero-1.jpg">
+    <p class="text">
+    Join the rolling family!
+    </p>
+  </div>
+  <div class="info">
+    <h1>Cowabu</h1>
+    <p><b>Skate ipsum dolor sit amet, rip grip hip grab 540 pivot nose Tracker. Gnar bucket Skateboard Shuffle Casper Slide 180 boneless layback hardware nosebone</b></p>
+    <p>Vans California Daze rock and roll chicken wing pogo transfer. Pwerslide pivot slam Sidewalk Surfer durometer. Deck full-cab gap Old Ghosts ho-ho. Invert melancholy feeble rocket air. Hanger rock and roll g-turn ledge.50-50 Kvin Harris boardslide</p>
+
+  </div>
+  <div class="register">
+<h1>Register</h1>
+<form action="">
+  <div class="name">
+    <p>Name</p>
+  <input type="text" name="" id="">
+  </div>
+  <div class="email">
+    <p>Email</p>
+<input type="text">
+  </div>
+<div class="password">
+<p>Password</p>
+<input type="password">
+</div>
+
+</form>
+  </div>
+</div>
+
+
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style lang="scss" scoped>
+
+  .grid{
+    display: grid;
+    height: 80vh;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 60% 40% ;
+    grid-column-gap: 20px;
+  }
+
+  .Join{
+    position: relative;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .Skate{
+    width: 100%;
+    height: 100%;
+    }
+    .text{
+     position: absolute;
+     font-size: 3rem;
+     color: white;
+
+    }
+
+
+  }
+
+  .grid .register p{
+    font-size: 1.2rem ;
+    padding: 0;
+    margin: 0;
+    color: rgba(0, 0, 0, 0.603);
+  }
+
+  input{
+      width: 100%;
+    padding: 10px;
+     font-size: 1.5rem;
+  }
+</style>
