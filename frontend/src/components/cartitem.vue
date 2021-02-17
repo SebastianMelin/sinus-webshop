@@ -3,12 +3,12 @@
   <div class="container">
      <slot name="img" class="slotbox"/>
         <div class="text">
+    <slot name="delete" />
         <slot name="title" class="slotItemName"/>
         
         <slot name="shortDesc" class="slotItemType"/>
         
         <slot name="sn" class="slotSN"/>
-        
         </div>
     <slot name="price" class="slotprice"/>
 

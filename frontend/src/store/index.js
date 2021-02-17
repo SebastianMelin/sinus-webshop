@@ -1,14 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import createPersistedState from "vuex-persistedstate";
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+// import auth from './modules/auth';
 
 
 Vue.use(Vuex, axios, VueAxios)
     // const url = "http://192.168.10.219:5000/api/products";
     // const headers = { Accept: "application/json" };
 export default new Vuex.Store({
+    modules: {
+
+    },
+    plugins: [createPersistedState()],
 
     state: {
         currentUser: {},
@@ -29,14 +34,22 @@ export default new Vuex.Store({
             var found = state.userOrder.findIndex(element => element._id == storeItem._id);
 
             Vue.set(state.userOrder, found, storeItem)
+        },
+        REMOVE_ORDERITEM(state, storeItem) {
+            var found = state.userOrder.findIndex(element => element._id == storeItem._id);
+            state.userOrder.splice(found, 1)
+        },
+        SAVE_CURRENTUSER(state, currentUser) {
+            state.currentUser = currentUser;
         }
+
 
     },
     actions: {
 
         loadStoreItems({ commit }) {
 
-            axios.get('http://192.168.10.219:5000/api/products').then(result => {
+            axios.get('/products').then(result => {
                 commit('SAVE_STOREITEMS', result.data);
             }).catch(error => {
 
@@ -61,14 +74,27 @@ export default new Vuex.Store({
             }
 
         },
+        createOrder() {
 
-        // async loadStoreItems(state) {
-        //     const item = await fetch({ url }, { headers });
-        //     const i = await item.json();
-        //     state.commit('SAVE_STOREITEMS', i)
-        // }
+            axios.post('/orders', this.state.userOrder);
+
+        },
+        removeFromOrder({ commit }, item) {
+            if (item.amount == 1) {
+                commit('REMOVE_ORDERITEM', item)
+            } else {
+
+                item.amount -= 1;
+                commit('CHANGE_ORDERITEM', item)
+            }
+
+        },
+        saveUser({ commit }, item) {
+            commit('SAVE_CURRENTUSER', item)
+        }
+
     },
-    modules: {},
+
     getters: {
         getcurrentUser: state => state.currentUser,
         getuserOrder: state => state.userOrder,

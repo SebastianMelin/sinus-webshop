@@ -14,19 +14,24 @@
   </div>
   <div class="register">
 <h1>Register</h1>
-<form action="">
+<form @submit.prevent="handleSubmit">
   <div class="name">
     <p>Name</p>
-  <input type="text" name="" id="">
+  <input type="text" v-model="name">
   </div>
   <div class="email">
     <p>Email</p>
-<input type="text">
+<input v-model="email" type="text">
   </div>
 <div class="password">
 <p>Password</p>
-<input type="password">
+<input v-model="password" type="password">
 </div>
+<div class="password">
+<p>Repeat Password</p>
+<input v-model="repeatPassword" type="password">
+</div>
+<button v-on:click="handleSubmit">Registrera</button>
 
 </form>
   </div>
@@ -36,8 +41,30 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
+data() {
+      return {
+       name:"",
+       email:"",
+       password:"" ,  
+       repeatPassword:""
+      }
+  },
+  methods: {
+     async handleSubmit(){
+       const response = await axios.post('/register', {
+        name:this.name,
+        email:this.email,
+        password:this.password,
+        repeatPassword:this.repeatPassword
+       });
+       console.log(response)
+       
 
+      }
+ 
+  },
 }
 </script>
 

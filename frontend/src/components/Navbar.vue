@@ -8,16 +8,17 @@
          <div class="right">
 
 
-      <router-link to="/">Home</router-link> |
-      <router-link to="/myaccount">About</router-link>|
+      <router-link to="/">Products</router-link> |
+      <router-link to="/myaccount">Register</router-link>|
       <router-link to="/Basket">
       <img class="bag" src="@/assets/icon-bag-white.svg">
       </router-link>
-      <button @click="$refs.ModalLogin.openModal()">Open modal</button>
+      <button @click="$refs.ModalLogin.openModal()">Log in</button>
 
 
       
          </div>
+      <form @submit.prevent="handleSubmit">
         <ModalLogin ref="ModalLogin">
       <!-- <template v-slot:header>
         <h1>Modal title</h1>
@@ -30,12 +31,13 @@
 
       <template v-slot:footer>
         <div class="buttonbox">
-          <button class="buttons" @click="$refs.ModalLogin.closeModal()">Register</button>
-          <button class="buttons" @click="$refs.ModalLogin.closeModal()">Login</button>
-          <button v-on:click="send" >send</button>
+          <button class="buttons"  @click="$refs.ModalLogin.closeModal(), $router.push('myaccount')">Register</button>
+          <button class="buttons" v-on:click="handleSubmit, $refs.ModalLogin.closeModal()">Login</button>
+          
         </div>
       </template>
         </ModalLogin>
+      </form>
       
     </div>
 </template>
@@ -47,19 +49,29 @@ export default {
 components: {
     ModalLogin
   },
-//   data() {
-//       return {
-//        email:"",
-//        password:""   
-//       }
-//   },
-  methods: {
-      send: function(){
-        const dato = {email:"asdf", password:"asdf"}  
-    axios.post("https://reqres.in/api/articles", dato)
-    .then(response => this.articleId = response.data.id);
-
+  data() {
+      return {
+       email:"",
+       password:""   
       }
+  },
+  methods: {
+     async handleSubmit(){
+       const response = await axios.post('/auth', {
+        email:this.email,
+        password:this.password
+       });
+       console.log(response)
+       localStorage.setItem('token',response.data.token)
+       this.$store.dispatch('saveUser',response)
+      }
+      
+    //   send: function(){
+    //     const dato = {email:"asdf", password:"asdf"}  
+    // axios.post("https://reqres.in/api/articles", dato)
+    // .then(response => this.articleId = response.data.id);
+
+      // }
   },
 }
 </script>

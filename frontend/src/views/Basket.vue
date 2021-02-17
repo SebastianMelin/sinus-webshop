@@ -29,7 +29,7 @@
     </p>
     <CardDetails/> 
   </div>  
-  <div class="button">
+  <div class="button" v-on:click="buy">
     Take my money
   </div>
 
@@ -50,7 +50,12 @@ components:{
   PersonDetails,
   CardDetails
 },
+methods: {
+ async buy(){
+    await this.$store.dispatch("createOrder")
 
+  }
+},
 
 
 }

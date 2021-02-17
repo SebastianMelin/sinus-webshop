@@ -6,6 +6,7 @@
         <template v-slot:img>
             <img class="slotbox" :src="require(`@/assets/${item.imgFile}`)">
         </template>
+         
         <template v-slot:title>
             <p class="slotItemName">
                 {{item.title}}
@@ -23,8 +24,11 @@
         </template>
         <template v-slot:price>
             <div class="slotprice">
-              {{item.amount}}:antal {{item.price}} styck
+              {{item.amount}}:st {{item.price}}SEK
             </div>
+        </template>
+        <template v-slot:delete>
+            <button  v-on:click="deleteFromCart(item)">Remove</button>
         </template>
     </CartItem>
     
@@ -50,22 +54,27 @@ computed:{
     return this.$store.getters.getcost
   }
 },
-
+methods: {
+ deleteFromCart: function(item){
+   this.$store.dispatch('removeFromOrder',item)
+   
+ }
+},
 }
 </script>
 
 <style lang="scss" scoped>
 .slotItemName{
-        font-size: 1.6rem;
+        font-size: 1.2rem;
     font-weight: bold;
     }
     .slotItemType{
-        font-size: 1.2rem;
+        font-size: 0.8rem;
         color: rgba(0, 0, 0, 0.603);
     }
     .slotSN{
         color: rgba(0, 0, 0, 0.411);
-        font-size: 0.8rem;
+        font-size: 0.5rem;
     }
 
 .slotprice{
