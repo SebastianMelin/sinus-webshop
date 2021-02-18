@@ -2,7 +2,7 @@
  
 <div class="grid">
   <div class="'box1">
-    <p>Youre Items</p>
+    <p>Your items</p>
   </div>
   <div class='Items'>
     <p class="TextLine">
@@ -54,6 +54,11 @@ methods: {
  async buy(){
     await this.$store.dispatch("createOrder")
 
+  }
+},
+computed:{
+  user: function(){
+    return this.$store.getters.getcurrentUser
   }
 },
 

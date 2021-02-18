@@ -3,7 +3,7 @@
   <div class="Join">
     <img class="Skate" src="@/assets/skate-hero-1.jpg">
     <p class="text">
-    Join the rolling family!
+     Join the rolling family!
     </p>
   </div>
   <div class="info">
@@ -14,7 +14,7 @@
   </div>
   <div class="register">
 <h1>Register</h1>
-<form @submit.prevent="handleSubmit">
+<form @submit.prevent="register">
   <div class="name">
     <p>Name</p>
   <input type="text" v-model="name">
@@ -31,7 +31,7 @@
 <p>Repeat Password</p>
 <input v-model="repeatPassword" type="password">
 </div>
-<button v-on:click="handleSubmit">Registrera</button>
+<button v-on:click="register">Registrera</button>
 
 </form>
   </div>
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 export default {
 data() {
       return {
@@ -51,20 +51,24 @@ data() {
        repeatPassword:""
       }
   },
-  methods: {
-     async handleSubmit(){
-       const response = await axios.post('/register', {
-        name:this.name,
-        email:this.email,
-        password:this.password,
-        repeatPassword:this.repeatPassword
-       });
-       console.log(response)
-       
-
+ methods: {
+      register: function () {
+        let data = {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          repeatPassword: this.repeatPassword
+        }
+        this.$store.dispatch('register', data)
+       .then(() => this.$router.push('/'))
+       .catch(err => console.log(err))
       }
- 
-  },
+    },
+    computed:{
+      username(){
+        return this.$store.getters.getUser
+      }
+    }
 }
 </script>
 

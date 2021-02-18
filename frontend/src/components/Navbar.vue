@@ -1,25 +1,26 @@
 <template>
      <div class="nav">
-      
             <img class="logo" src="@/assets/sinus-logo.svg">
-
 
  
          <div class="right">
 
-
+           
+     
       <router-link to="/">Products</router-link> |
-      <router-link to="/myaccount">Register</router-link>|
+      
+      <router-link v-if="!isLoggedIn" to="/myaccount">Register</router-link>
       <router-link to="/Basket">
       <img class="bag" src="@/assets/icon-bag-white.svg">
       </router-link>
-      <button @click="$refs.ModalLogin.openModal()">Log in</button>
+      <button v-if="!isLoggedIn" @click="$refs.ModalLogin.openModal()">Log in</button>
+      <button v-if="isLoggedIn" @click="logout">Log out</button>
 
 
       
          </div>
-      <form @submit.prevent="handleSubmit">
-        <ModalLogin ref="ModalLogin">
+      <form @submit.prevent="login">
+        <ModalLogin ref="ModalLogin" v-if="!isLoggedIn">
       <!-- <template v-slot:header>
         <h1>Modal title</h1>
       </template> -->
@@ -31,8 +32,8 @@
 
       <template v-slot:footer>
         <div class="buttonbox">
-          <button class="buttons"  @click="$refs.ModalLogin.closeModal(), $router.push('myaccount')">Register</button>
-          <button class="buttons" v-on:click="handleSubmit, $refs.ModalLogin.closeModal()">Login</button>
+          <button class="buttons"  v-on:click="$refs.ModalLogin.closeModal(), $router.push('myaccount')">Register</button>
+          <button class="buttons"  v-on:click="login">Login</button>
           
         </div>
       </template>
@@ -43,8 +44,9 @@
 </template>
 
 <script>
+
 import ModalLogin from "../components/ModalLogin";
-import axios from 'axios';
+// import axios from 'axios';
 export default {
 components: {
     ModalLogin
@@ -56,15 +58,32 @@ components: {
       }
   },
   methods: {
-     async handleSubmit(){
-       const response = await axios.post('/auth', {
-        email:this.email,
-        password:this.password
-       });
-       console.log(response)
-       localStorage.setItem('token',response.data.token)
-       this.$store.dispatch('saveUser',response)
+    login: function () {
+       let data = {
+         
+          email: this.email,
+          password: this.password,
+         
       }
+       
+        this.$store.dispatch('login',data)
+        
+      },
+      logout: function () {
+        
+        this.$store.dispatch('logout')
+       
+        
+      },
+    //  async handleSubmit(){
+    //    const response = await axios.post('/auth', {
+    //     email:this.email,
+    //     password:this.password
+    //    });
+    //    console.log(response)
+    //    localStorage.setItem('token',response.data.token)
+    //    this.$store.dispatch('saveUser',response)
+    //   }
       
     //   send: function(){
     //     const dato = {email:"asdf", password:"asdf"}  
@@ -73,6 +92,14 @@ components: {
 
       // }
   },
+  computed: {
+     isLoggedIn(){ 
+       return this.$store.getters.isLoggedIn
+    },
+     userIs(){
+        return this.$store.getters.getUser
+        },
+  }
 }
 </script>
 
@@ -120,5 +147,7 @@ font-size: 1.3rem;
     align-self: center;
       justify-self: end;
 }
-
+.test{
+color: black;
+}
 </style>

@@ -44,7 +44,9 @@ export default {
     openModal() {
       this.show = true;
       document.querySelector("body").classList.add("overflow-hidden");
-    }
+
+    },
+    
   }
 };
 </script>

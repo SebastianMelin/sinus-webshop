@@ -1,47 +1,62 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import createPersistedState from "vuex-persistedstate";
+// import createPersistedState from "vuex-persistedstate";
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-// import auth from './modules/auth';
+
+
+
+
 
 
 Vue.use(Vuex, axios, VueAxios)
-    // const url = "http://192.168.10.219:5000/api/products";
-    // const headers = { Accept: "application/json" };
 export default new Vuex.Store({
-    modules: {
-
-    },
-    plugins: [createPersistedState()],
 
     state: {
-        currentUser: {},
+
         storeItems: [],
         userOrder: [],
-
+        status: '',
+        token: localStorage.getItem('token') || '',
+        user: {}
 
     },
     mutations: { //async
 
         SAVE_STOREITEMS(state, storeItems) {
             state.storeItems = storeItems;
+
         },
         ADD_ORDERITEM(state, storeItem) {
             state.userOrder.push(storeItem)
         },
         CHANGE_ORDERITEM(state, storeItem) {
             var found = state.userOrder.findIndex(element => element._id == storeItem._id);
-
             Vue.set(state.userOrder, found, storeItem)
         },
         REMOVE_ORDERITEM(state, storeItem) {
             var found = state.userOrder.findIndex(element => element._id == storeItem._id);
             state.userOrder.splice(found, 1)
         },
-        SAVE_CURRENTUSER(state, currentUser) {
-            state.currentUser = currentUser;
-        }
+
+        auth_request(state) {
+            state.status = 'loading'
+        },
+        AUTH_SUCCESS(state, data) {
+            state.status = 'success';
+            state.token = data.token;
+            state.user = data.user;
+
+
+        },
+        auth_error(state) {
+            state.status = 'error'
+        },
+        logout(state) {
+            state.status = ''
+            state.token = ''
+
+        },
 
 
     },
@@ -49,12 +64,12 @@ export default new Vuex.Store({
 
         loadStoreItems({ commit }) {
 
-            axios.get('/products').then(result => {
-                commit('SAVE_STOREITEMS', result.data);
-            }).catch(error => {
-
-                throw new Error(`API ${error}`);
-            });
+            axios.get('http://localhost:5000/api/products').then(result => {
+                    commit('SAVE_STOREITEMS', result.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
         addToCart({ commit }, item) {
             var check = false;
@@ -64,7 +79,7 @@ export default new Vuex.Store({
                     item.amount = element.amount + 1;
                     commit('CHANGE_ORDERITEM', item)
                     check = true;
-                    // commit('CHANGE_ORDERITEM', element);
+
                 }
             })
             if (check == false) {
@@ -75,9 +90,33 @@ export default new Vuex.Store({
 
         },
         createOrder() {
+            return new Promise((resolve, reject) => {
+                const testlist = [];
+                this.state.userOrder.forEach(product => {
+                    if (product.amount == 1) {
 
-            axios.post('/orders', this.state.userOrder);
+                        testlist.push(product._id)
+                    } else {
+                        for (var i = 1; i <= product.amount; i++) {
+                            testlist.push(product._id)
+                        }
+                    }
+                })
+                axios({ url: 'http://localhost:5000/api/orders', data: { items: testlist, customer: this.state.user }, method: 'POST' })
+                    .then(resp => {
 
+                        console.log(resp.data)
+
+
+
+
+                        resolve(resp)
+                    })
+                    .catch(err => {
+
+                        reject(err)
+                    })
+            })
         },
         removeFromOrder({ commit }, item) {
             if (item.amount == 1) {
@@ -89,14 +128,57 @@ export default new Vuex.Store({
             }
 
         },
-        saveUser({ commit }, item) {
-            commit('SAVE_CURRENTUSER', item)
-        }
+        login({ commit }, user) {
+            return new Promise((resolve, reject) => {
+                commit('auth_request')
+                axios({ url: 'http://localhost:5000/api/auth', data: user, method: 'POST' })
+                    .then(resp => {
+                        console.log(resp.data.user)
+                        localStorage.setItem('token', resp.data.token)
+                        axios.defaults.headers.common['Authorization'] = resp.data.token
+                        commit('AUTH_SUCCESS', resp.data)
+                        console.log(this.state.user.name)
+                        resolve(resp)
+                    })
+                    .catch(err => {
+                        commit('auth_error')
+                        localStorage.removeItem('token')
+                        reject(err)
+                    })
+            })
+        },
+        logout({ commit }) {
+            return new Promise((resolve) => {
+                commit('logout')
+                localStorage.removeItem('token')
+                delete axios.defaults.headers.common['Authorization']
+                resolve()
+            })
+        },
+        register({ commit }, user) {
+            return new Promise((resolve, reject) => {
+                commit('auth_request')
+                axios({ url: 'http://localhost:5000/api/register', data: user, method: 'POST' })
+                    .then(resp => {
+                        const token = resp.data.token
+                        const user = resp.data.user
+                        localStorage.setItem('token', token)
+                        axios.defaults.headers.common['Authorization'] = token
+                        commit('auth_success', token, user)
+                        resolve(resp)
+                    })
+                    .catch(err => {
+                        commit('auth_error', err)
+                        localStorage.removeItem('token')
+                        reject(err)
+                    })
+            })
+        },
 
     },
 
     getters: {
-        getcurrentUser: state => state.currentUser,
+        getUser: state => state.user,
         getuserOrder: state => state.userOrder,
         getstoreItems: state => state.storeItems,
         getcost: state => {
@@ -108,6 +190,8 @@ export default new Vuex.Store({
             });
             console.log(sum)
             return sum
-        }
+        },
+        isLoggedIn: state => !!state.token,
+        authStatus: state => state.status,
     }
 })
