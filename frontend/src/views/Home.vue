@@ -1,6 +1,13 @@
 <template>
   <div class="home">
-    <store-item v-for="item in storeItems" :key="item._id">
+    <StoreItem
+      class="storeItem"
+      v-for="item in storeItems"
+      v-on:click.native="
+        $refs.StoreItemModal.openModal(), setSelectedItem(item)
+      "
+      :key="item._id"
+    >
       <template v-slot:title>
         <p class="slotname">{{ item.title }}</p>
       </template>
@@ -18,25 +25,25 @@
           <img class="bag" src="@/assets/icon-bag-white.svg" />
         </button>
       </template>
-    </store-item>
+    </StoreItem>
+    <StoreItemModal ref="StoreItemModal" />
   </div>
 </template>
-
 <script>
 import StoreItem from "../components/StoreItem.vue";
-
+import StoreItemModal from "../components/StoreItemModal.vue";
 export default {
   components: {
     StoreItem,
+    StoreItemModal,
   },
-  data() {
-    return {
-      // itemsList: []
-    };
-  },
+
   methods: {
     additemtoCart: function(item) {
       this.$store.dispatch("addToCart", item);
+    },
+    setSelectedItem: function(item) {
+      this.$store.dispatch("setSelectedItem", item);
     },
   },
   mounted() {
@@ -47,14 +54,18 @@ export default {
       return this.$store.getters.getstoreItems;
     },
   },
-  // created() {
-  //   this.$store.dispatch("loadStoreItems")
-  // },
 };
 </script>
 
 <style lang="scss" scoped>
+.storeItem {
+  z-index: 1;
+  position: relative;
+}
 .slotcircle {
+  outline: none;
+  position: relative;
+  z-index: 9;
   border: none;
   grid-row: 1;
   grid-column: 3;
@@ -67,6 +78,7 @@ export default {
   justify-items: center;
   padding: 5px;
   margin-right: 20px;
+
   cursor: pointer;
   &:hover {
     transition: 200ms;

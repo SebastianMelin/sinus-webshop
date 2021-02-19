@@ -8,21 +8,26 @@ Vue.use(Vuex, axios, VueAxios);
 export default new Vuex.Store({
     plugins: [
         createPersistedState({
-            paths: ["userOrder"],
+            paths: ["userOrder", "user"],
         }),
     ],
     state: {
         storeItems: [],
         userOrder: [],
+        userOrderHistory: [],
         status: "",
         token: localStorage.getItem("token") || "",
         user: {},
+        selectedItem: {},
     },
     mutations: {
         //async
 
         SAVE_STOREITEMS(state, storeItems) {
             state.storeItems = storeItems;
+        },
+        SET_SELECTEDITEM(state, selectedItem) {
+            state.selectedItem = selectedItem;
         },
         ADD_ORDERITEM(state, storeItem) {
             state.userOrder.push(storeItem);
@@ -39,7 +44,12 @@ export default new Vuex.Store({
             );
             state.userOrder.splice(found, 1);
         },
-
+        CLEAR_CART(state) {
+            state.userOrder = [];
+        },
+        SAVE_USERHISTORY(state, orders) {
+            state.userOrderHistory = orders;
+        },
         auth_request(state) {
             state.status = "loading";
         },
@@ -54,9 +64,24 @@ export default new Vuex.Store({
         logout(state) {
             state.status = "";
             state.token = "";
+            state.user = {};
+            state.userOrderHistory = [];
         },
     },
     actions: {
+        setSelectedItem({ commit }, item) {
+            commit("SET_SELECTEDITEM", item);
+        },
+        loadUserOrderHistory({ commit }) {
+            axios
+                .get("/orders", this.state.user)
+                .then((result) => {
+                    commit("SAVE_USERHISTORY", result.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
         loadStoreItems({ commit }) {
             axios
                 .get("/products")
@@ -81,31 +106,39 @@ export default new Vuex.Store({
                 commit("ADD_ORDERITEM", item);
             }
         },
-        createOrder() {
+        createOrder({ commit }) {
             //Option to add the delivery data must be added
-            return new Promise((resolve, reject) => {
-                const testlist = [];
-                this.state.userOrder.forEach((product) => {
-                    if (product.amount == 1) {
-                        testlist.push(product._id);
-                    } else {
-                        for (var i = 1; i <= product.amount; i++) {
+
+            if (this.state.userOrder.length >= 1) {
+                return new Promise((resolve, reject) => {
+                    const testlist = [];
+                    this.state.userOrder.forEach((product) => {
+                        if (product.amount == 1) {
                             testlist.push(product._id);
+                        } else {
+                            for (var i = 1; i <= product.amount; i++) {
+                                testlist.push(product._id);
+                            }
                         }
-                    }
-                });
-                axios({
-                        url: "/orders",
-                        data: { items: testlist, customer: this.state.user },
-                        method: "POST",
-                    })
-                    .then((resp) => {
-                        resolve(resp);
-                    })
-                    .catch((err) => {
-                        reject(err);
+                        commit("CLEAR_CART");
                     });
-            });
+                    axios({
+                            url: "/orders",
+                            data: { items: testlist, customer: this.state.user },
+                            method: "POST",
+                        })
+                        .then((resp) => {
+                            alert(resp.data.message);
+                            resolve(resp);
+                        })
+                        .catch((err) => {
+                            alert(err);
+                            reject(err);
+                        });
+                });
+            } else {
+                alert("Your cart is empty");
+            }
         },
         removeFromOrder({ commit }, item) {
             if (item.amount == 1) {
@@ -164,7 +197,9 @@ export default new Vuex.Store({
 
     getters: {
         getUser: (state) => state.user,
+        getSelectedItem: (state) => state.selectedItem,
         getuserOrder: (state) => state.userOrder,
+        getUserOrderHistory: (state) => state.userOrderHistory,
         getstoreItems: (state) => state.storeItems,
         getcost: (state) => {
             var sum = 0;

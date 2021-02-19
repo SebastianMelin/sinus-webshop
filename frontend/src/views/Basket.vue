@@ -28,9 +28,9 @@
       </p>
       <CardDetails />
     </div>
-    <div class="button" v-on:click="buy">
+    <button class="button" v-on:click="buy">
       Take my money
-    </div>
+    </button>
   </div>
 </template>
 
@@ -46,12 +46,11 @@ export default {
   },
   methods: {
     async buy() {
-      await this.$store.dispatch("createOrder");
-    },
-  },
-  computed: {
-    user: function() {
-      return this.$store.getters.getcurrentUser;
+      if (this.$store.getters.isLoggedIn) {
+        await this.$store.dispatch("createOrder");
+      } else {
+        alert("You need to log in to log in to order");
+      }
     },
   },
 };

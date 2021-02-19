@@ -1,5 +1,6 @@
 <template>
   <div class="ProductCard">
+    <slot name="slotdiv" />
     <slot class="slotname" name="title" />
     <slot name="button" class="circle" />
     <slot name="shortDesc" class="slottype" />

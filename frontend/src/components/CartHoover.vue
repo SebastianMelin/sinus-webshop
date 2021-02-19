@@ -48,9 +48,8 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
   position: fixed;
-  top: 0;
+  top: 70px;
   right: 0;
-  bottom: 0;
   left: 0;
   z-index: 9;
   &__backdrop {
@@ -65,26 +64,13 @@ export default {
   &__dialog {
     background-color: #ffffff;
     position: relative;
-    width: 25%;
+    width: 400px;
     min-width: 233px;
     margin: 50px auto;
     display: flex;
     flex-direction: column;
     border-radius: 5px;
     z-index: 2;
-  }
-  &__dialog:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border: 10px solid transparent;
-    border-bottom-color: #ffffff;
-    border-top: 0;
-    margin-left: -10px;
-    margin-top: -10px;
   }
   &__close {
     width: 30px;

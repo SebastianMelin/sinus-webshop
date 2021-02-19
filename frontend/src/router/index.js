@@ -13,8 +13,28 @@ const routes = [{
     {
         path: "/myaccount",
         name: "MyAccount",
+        beforeEnter: (to, from, next) => {
+            if (store.getters.isLoggedIn) {
+                next();
+                return;
+            }
+            next("/");
+        },
         component: () =>
             import ("../views/MyAccount.vue"),
+    },
+    {
+        path: "/registerwindow",
+        name: "Registerwindow",
+        beforeEnter: (to, from, next) => {
+            if (!store.getters.isLoggedIn) {
+                next();
+                return;
+            }
+            next("/");
+        },
+        component: () =>
+            import ("../views/Registerwindow.vue"),
     },
     {
         path: "/basket",

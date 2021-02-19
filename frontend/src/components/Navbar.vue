@@ -3,14 +3,13 @@
     <img class="logo" src="@/assets/sinus-logo.svg" />
 
     <div class="right">
-      <router-link class="routerItem" to="/">Products</router-link>
-
-      <router-link class="routerItem" v-if="!isLoggedIn" to="/myaccount"
-        >Register</router-link
-      >
-
-      <button class="LoginBtn" @click="$refs.CartHoover.openModal()">
-        <img class="bag" src="@/assets/icon-bag-white.svg" />
+      <button class="LoginBtn">
+        <router-link class="routerItem" to="/">Products</router-link>
+      </button>
+      <button v-if="isLoggedIn" class="LoginBtn">
+        <router-link class="routerItem" v-if="isLoggedIn" to="/myaccount"
+          >My account</router-link
+        >
       </button>
 
       <button
@@ -21,14 +20,17 @@
         Log in
       </button>
       <button class="LoginBtn" v-if="isLoggedIn" @click="logout">
-        Log out
+        <router-link class="routerItem" to="/">Log out</router-link>
+      </button>
+      <button class="LoginBtn" @click="$refs.CartHoover.openModal()">
+        <img class="bag" src="@/assets/icon-bag-white.svg" />
       </button>
     </div>
     <CartHoover ref="CartHoover">
       <template v-slot:body> </template>
       <template v-slot:footer>
         <router-link to="/Basket">
-          <button @click="$refs.CartHoover.closeModal()" class="buttons">
+          <button @click="$refs.CartHoover.closeModal()" class="checkout">
             Checkout
           </button>
         </router-link>
@@ -46,7 +48,7 @@
             <button
               class="buttons"
               v-on:click="
-                $refs.ModalLogin.closeModal(), $router.push('myaccount')
+                $refs.ModalLogin.closeModal(), $router.push('registerwindow')
               "
             >
               Register
@@ -99,6 +101,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.checkout {
+  font-size: 1.4rem;
+  border: none;
+  background: black;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  border-radius: 20px;
+  padding: 5px;
+  &:hover {
+    transition-timing-function: ease-in-out;
+    transition: 500ms;
+    background-color: rgba(0, 0, 0, 0.795);
+  }
+}
+
 .routerItem {
   margin-right: 1rem;
   text-decoration: none;
@@ -142,6 +160,7 @@ input {
   }
 }
 .bag {
+  outline: none;
   background-color: #f56969;
   width: 30px;
   height: 30px;
@@ -172,6 +191,7 @@ input {
 }
 
 .LoginBtn {
+  outline: none;
   background-color: #e5e5e5;
   border: none;
   font-size: 2rem;

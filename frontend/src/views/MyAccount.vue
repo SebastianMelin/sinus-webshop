@@ -1,144 +1,120 @@
 <template>
-  <div class="grid">
-    <div class="Join">
-      <img class="Skate" src="@/assets/skate-hero-1.jpg" />
-      <p class="text">
-        Join the rolling family!
-      </p>
-    </div>
-    <div class="info">
-      <h1>Cowabu</h1>
-      <p>
-        <b
-          >Skate ipsum dolor sit amet, rip grip hip grab 540 pivot nose Tracker.
-          Gnar bucket Skateboard Shuffle Casper Slide 180 boneless layback
-          hardware nosebone</b
-        >
-      </p>
-      <p>
-        Vans California Daze rock and roll chicken wing pogo transfer. Pwerslide
-        pivot slam Sidewalk Surfer durometer. Deck full-cab gap Old Ghosts
-        ho-ho. Invert melancholy feeble rocket air. Hanger rock and roll g-turn
-        ledge.50-50 Kvin Harris boardslide
-      </p>
-    </div>
-    <div class="register">
-      <h1>Register</h1>
-      <form @submit.prevent="register">
-        <div class="name">
-          <p>Name</p>
-          <input type="text" v-model="name" />
+  <div class="center">
+    <div class="profileBox">
+      <img src="@/assets/ProfilePic.png" alt="" />
+      <div class="name">
+        <p>User Name:</p>
+        <p>{{ User.name }}</p>
+      </div>
+      <div class="email">
+        <p>Email:</p>
+        <p>{{ User.email }}</p>
+      </div>
+      <div class="email">
+        <p class="ordhis">Order history</p>
+      </div>
+      <div class="historybox">
+        <div v-for="order in History" :key="order._id" class="history">
+          <div>
+            <p>Order ID: {{ order._id }}</p>
+            <p>Status: {{ order.status }}</p>
+            <p>Summa: {{ order.orderValue }} SEK</p>
+          </div>
         </div>
-        <div class="email">
-          <p>Email</p>
-          <input v-model="email" type="text" />
-        </div>
-        <div class="password">
-          <p>Password</p>
-          <input v-model="password" type="password" />
-        </div>
-        <div class="password">
-          <p>Repeat Password</p>
-          <input v-model="repeatPassword" type="password" />
-        </div>
-        <button v-on:click="register">Registrera</button>
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-// import axios from 'axios'
 export default {
-  data() {
-    return {
-      name: "",
-      email: "",
-      password: "",
-      repeatPassword: "",
-    };
-  },
-  methods: {
-    register: function() {
-      let data = {
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        repeatPassword: this.repeatPassword,
-      };
-      this.$store
-        .dispatch("register", data)
-        .then(() => this.$router.push("/"))
-        .catch((err) => console.log(err));
-    },
-  },
   computed: {
-    username() {
+    User: function() {
       return this.$store.getters.getUser;
     },
+    History: function() {
+      return this.$store.getters.getUserOrderHistory;
+    },
+  },
+  mounted() {
+    this.$store.dispatch("loadUserOrderHistory");
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.grid {
-  display: grid;
-  height: 70vh;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 60% 48vh;
-  grid-column-gap: 20px;
-}
-
-.Join {
-  position: relative;
-  grid-column-start: 1;
-  grid-column-end: 3;
+.center {
   display: flex;
   align-items: center;
   justify-content: center;
-  .Skate {
-    width: 100%;
-    height: 100%;
+
+  height: 70vh;
+}
+
+.profileBox {
+  display: grid;
+
+  background: #f1f1f1;
+  grid-template-rows: 300px 50px 50px;
+
+  width: 400px;
+  height: 600px;
+  border: 1px solid black;
+  -webkit-box-shadow: 5px 5px 7px 4px rgba(0, 0, 0, 0.92);
+  box-shadow: 5px 5px 7px 4px rgba(0, 0, 0, 0.92);
+}
+img {
+  align-self: center;
+  justify-self: center;
+  width: 200px;
+  height: 200px;
+}
+.name {
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  p {
+    padding: 0;
+    margin: 0;
+    font-size: 1.5rem;
+    &:first-child {
+      font-size: 1.6rem;
+    }
   }
-  .text {
-    position: absolute;
-    font-size: 3rem;
-    color: white;
+}
+.email {
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  p {
+    padding: 0;
+    margin: 0;
+    font-size: 1.5rem;
+    &:first-child {
+      font-size: 1.6rem;
+    }
   }
 }
-
-.grid .register p {
-  font-size: 1.2rem;
-  padding: 0;
-  margin: 0;
-  color: rgba(0, 0, 0, 0.603);
+.ordhis {
+  text-decoration: underline 2px solid black;
 }
-
-input {
-  width: 100%;
-  padding: 10px;
-  font-size: 1.5rem;
+.historybox {
+  overflow: auto;
+  height: 60%;
+  padding: 30px;
 }
-.btn {
-  margin-top: 20px;
-  width: 100%;
-  text-align: center;
-}
-.Regibtn {
-  font-size: 1.2rem;
-  align-items: stretch;
-  background-color: rgba(0, 0, 0, 0.692);
-  color: white;
-  border-radius: 15px;
-  padding: 8px;
-  border: none;
-  margin: 0px 5px 0px 5px;
-  cursor: pointer;
+.history {
+  border: 1px solid black;
+  margin-bottom: 20px;
+  display: flex;
+  align-self: center;
+  justify-self: center;
 
-  &:hover {
-    transition-timing-function: ease-in-out;
-    transition: 200ms;
-    color: rgb(218, 216, 216);
+  p {
+    overflow: auto;
+    padding: 0;
+    margin: 0;
+    font-size: 1.5rem;
   }
 }
 </style>
