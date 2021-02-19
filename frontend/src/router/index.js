@@ -1,43 +1,43 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import store from '../store/index.js'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import store from "../store/index.js";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [{
-        path: '/',
-        name: 'Home',
-        component: Home
+        path: "/",
+        name: "Home",
+        component: Home,
     },
     {
-        path: '/myaccount',
-        name: 'MyAccount',
+        path: "/myaccount",
+        name: "MyAccount",
         component: () =>
-            import ('../views/MyAccount.vue')
+            import ("../views/MyAccount.vue"),
     },
     {
-        path: '/basket',
-        name: 'Basket',
+        path: "/basket",
+        name: "Basket",
         component: () =>
-            import ('../views/Basket.vue')
-    }
-]
+            import ("../views/Basket.vue"),
+    },
+];
 
 const router = new VueRouter({
-    mode: 'history',
+    mode: "history",
     base: process.env.BASE_URL,
-    routes
-})
+    routes,
+});
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
         if (store.getters.isLoggedIn) {
-            next()
-            return
+            next();
+            return;
         }
-        next('/')
+        next("/");
     } else {
-        next()
+        next();
     }
-})
-export default router
+});
+export default router;

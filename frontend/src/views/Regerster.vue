@@ -1,16 +1,9 @@
 <template>
-  
-
-<p>regrester</p>
-
+  <p>regrester</p>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
-<style>
-
-</style>
+<style></style>

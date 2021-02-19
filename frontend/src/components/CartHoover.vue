@@ -4,14 +4,11 @@
       <div class="modal__backdrop" @click="closeModal()" />
 
       <div class="modal__dialog">
-        <div class="modal__header">
-          <slot name="header" />
-        </div>
-
         <div class="modal__body">
-          <slot name="body" />
+          <div class="Items">
+            <Items />
+          </div>
         </div>
-
         <div class="modal__footer">
           <slot name="footer" />
         </div>
@@ -21,12 +18,17 @@
 </template>
 
 <script>
+import Items from "../components/items.vue";
+
 export default {
-  name: "ModalLogin",
+  name: "CartHoover",
   data() {
     return {
       show: false,
     };
+  },
+  components: {
+    Items,
   },
   methods: {
     closeModal() {
@@ -46,10 +48,10 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
   position: fixed;
-  top: 70px;
-  right: calc(10% - 80px);
+  top: 0;
+  right: 0;
   bottom: 0;
-
+  left: 0;
   z-index: 9;
   &__backdrop {
     background-color: rgba(0, 0, 0, 0.3);
@@ -63,17 +65,13 @@ export default {
   &__dialog {
     background-color: #ffffff;
     position: relative;
-    width: 350px;
-    height: 220px;
+    width: 25%;
     min-width: 233px;
     margin: 50px auto;
     display: flex;
     flex-direction: column;
     border-radius: 5px;
     z-index: 2;
-    // @media screen and (max-width: 992px) {
-    //   width: 90%;
-    // }
   }
   &__dialog:after {
     content: "";
@@ -116,5 +114,9 @@ export default {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+.Items {
+  grid-row: 2;
+  grid-column: 1;
 }
 </style>

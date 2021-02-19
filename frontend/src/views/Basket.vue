@@ -1,94 +1,83 @@
 <template>
- 
-<div class="grid">
-  <div class="'box1">
-    <p>Your items</p>
+  <div class="grid">
+    <div class="'box1">
+      <p>Your items</p>
+    </div>
+    <div class="Items">
+      <p class="TextLine">
+        <span>
+          Items
+        </span>
+      </p>
+      <Items />
+    </div>
+
+    <div class="PersonDe">
+      <p class="TextLine">
+        <span>
+          Delivery
+        </span>
+      </p>
+      <PersonDetails />
+    </div>
+    <div class="CradDe">
+      <p class="TextLine">
+        <span>
+          PAYMENT DETAILS
+        </span>
+      </p>
+      <CardDetails />
+    </div>
+    <div class="button" v-on:click="buy">
+      Take my money
+    </div>
   </div>
-  <div class='Items'>
-    <p class="TextLine">
-    <span>
-    Items
-    </span> 
-    </p>
-    <Items/>
-  </div>
-
-  <div class="PersonDe">
-    <p class="TextLine">
-    <span>
-    Delivery
-    </span> 
-    </p>
-  <PersonDetails/>
-  </div>
-  <div class="CradDe">
- <p class="TextLine">
-    <span>
-    PAYMENT DETAILS
-    </span> 
-    </p>
-    <CardDetails/> 
-  </div>  
-  <div class="button" v-on:click="buy">
-    Take my money
-  </div>
-
-</div>
-
-
-
 </template>
 
 <script>
-import Items from '../components/items.vue'
-import PersonDetails from'../components/PersonDetails.vue'
-import CardDetails from '../components/CardDetails.vue'
+import Items from "../components/items.vue";
+import PersonDetails from "../components/PersonDetails.vue";
+import CardDetails from "../components/CardDetails.vue";
 export default {
-
-components:{
-  Items,
-  PersonDetails,
-  CardDetails
-},
-methods: {
- async buy(){
-    await this.$store.dispatch("createOrder")
-
-  }
-},
-computed:{
-  user: function(){
-    return this.$store.getters.getcurrentUser
-  }
-},
-
-
-}
+  components: {
+    Items,
+    PersonDetails,
+    CardDetails,
+  },
+  methods: {
+    async buy() {
+      await this.$store.dispatch("createOrder");
+    },
+  },
+  computed: {
+    user: function() {
+      return this.$store.getters.getcurrentUser;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
-.grid{
+.grid {
+  width: 100%;
   display: grid;
-  grid-template-columns: 33% 33% 33%;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto auto auto;
-  grid-gap:20px;
-
+  grid-gap: 20px;
 }
-.Items{
+.Items {
   grid-row: 2;
   grid-column: 1;
-  
 }
 
-.TextLine{
+.TextLine {
   position: relative;
-  span{
-        background-color: #E5E5E5;
+  span {
+    background-color: #e5e5e5;
     padding-right: 20px;
   }
-  &::after{
-    content:"";
+  &::after {
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -99,28 +88,26 @@ computed:{
   }
 }
 
-
-.PersonDe{
-    grid-row: 2;
-    grid-column: 2;
+.PersonDe {
+  grid-row: 2;
+  grid-column: 2;
 }
-.CradDe{
-      grid-row: 2;
-    grid-column: 3;
+.CradDe {
+  grid-row: 2;
+  grid-column: 3;
 }
-.button{
- grid-row: 3;
-grid-column: 3; 
-display: flex;
-    background-color: black;
-    color: white;
-    width: 200px;
-    height: 50px;
-    text-align: center;
-    font-size: 1.4rem;
-    border-radius: 50px;
-       align-items: center;
+.button {
+  grid-row: 3;
+  grid-column: 3;
+  display: flex;
+  background-color: black;
+  color: white;
+  width: 200px;
+  height: 50px;
+  text-align: center;
+  font-size: 1.4rem;
+  border-radius: 50px;
+  align-items: center;
   justify-content: center;
 }
-
 </style>
