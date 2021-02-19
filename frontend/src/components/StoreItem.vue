@@ -1,13 +1,15 @@
 <template>
-  <div class="ProductCard">
-    <slot name="slotdiv" />
-    <slot class="slotname" name="title" />
-    <slot name="button" class="circle" />
-    <slot name="shortDesc" class="slottype" />
-    <slot name="img" class="slotstoreitem" />
-    <div class="button">
-      <slot name="price" class="slotprice" />
-      <section class="Type">Sek</section>
+  <div grid>
+    <div class="ProductCard">
+      <slot name="slotdiv" />
+      <slot name="button" class="circle" />
+      <slot class="slotname" name="title" />
+      <slot name="shortDesc" class="slottype" />
+      <slot name="img" class="slotstoreitem" />
+      <div class="button">
+        <slot name="price" class="slotprice" />
+        <section class="Type">Sek</section>
+      </div>
     </div>
   </div>
 </template>
@@ -34,6 +36,7 @@ export default {};
   -moz-box-shadow: 12px 21px 28px -13px rgba(0, 0, 0, 0.75);
   box-shadow: 12px 21px 28px -13px rgba(0, 0, 0, 0.75);
 }
+
 .button {
   display: flex;
   border: none;

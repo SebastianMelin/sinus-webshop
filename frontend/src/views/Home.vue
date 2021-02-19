@@ -1,11 +1,11 @@
 <template>
   <div class="home">
     <StoreItem
-      class="storeItem"
       v-for="item in storeItems"
       v-on:click.native="
         $refs.StoreItemModal.openModal(), setSelectedItem(item)
       "
+      class="item"
       :key="item._id"
     >
       <template v-slot:title>
@@ -21,7 +21,10 @@
         <p class="slottype">{{ item.shortDesc }}</p>
       </template>
       <template v-slot:button>
-        <button v-on:click="additemtoCart(item)" class="slotcircle">
+        <button
+          v-on:click.stop.prevent="additemtoCart(item)"
+          class="slotcircle"
+        >
           <img class="bag" src="@/assets/icon-bag-white.svg" />
         </button>
       </template>
@@ -58,14 +61,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.storeItem {
+.item {
   z-index: 1;
-  position: relative;
 }
 .slotcircle {
   outline: none;
-  position: relative;
-  z-index: 9;
   border: none;
   grid-row: 1;
   grid-column: 3;
@@ -78,6 +78,7 @@ export default {
   justify-items: center;
   padding: 5px;
   margin-right: 20px;
+  z-index: 2;
 
   cursor: pointer;
   &:hover {
